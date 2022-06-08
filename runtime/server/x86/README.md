@@ -6,18 +6,18 @@
 
 * Step 1. Download pretrained model(see the following link) or prepare your trained model.
 
-[AISHELL-1](http://mobvoi-speech-public.ufile.ucloud.cn/public/wenet/aishell/20210601_unified_transformer_server.tar.gz)
-| [AISHELL-2](http://mobvoi-speech-public.ufile.ucloud.cn/public/wenet/aishell2/20210602_unified_transformer_server.tar.gz)
-| [Multi-CN](http://mobvoi-speech-public.ufile.ucloud.cn/public/wenet/multi_cn/20210815_unified_conformer_server.tar.gz)
-| [LibriSpeech](http://mobvoi-speech-public.ufile.ucloud.cn/public/wenet/librispeech/20210610_u2pp_conformer_server.tar.gz)
-| [GigaSpeech](http://mobvoi-speech-public.ufile.ucloud.cn/public/wenet/gigaspeech/20210728_u2pp_conformer_server.tar.gz)
+[AISHELL-1](https://wenet-1256283475.cos.ap-shanghai.myqcloud.com/models/aishell/20210601_u2%2B%2B_conformer_libtorch.tar.gz)
+| [AISHELL-2](https://wenet-1256283475.cos.ap-shanghai.myqcloud.com/models/aishell2/20210618_u2pp_conformer_libtorch.tar.gz)
+| [GigaSpeech](https://wenet-1256283475.cos.ap-shanghai.myqcloud.com/models/gigaspeech/20210728_u2pp_conformer_libtorch.tar.gz)
+| [LibriSpeech](https://wenet-1256283475.cos.ap-shanghai.myqcloud.com/models/librispeech/20210610_u2pp_conformer_libtorch.tar.gz)
+| [Multi-CN](https://wenet-1256283475.cos.ap-shanghai.myqcloud.com/models/multi_cn/20210815_unified_conformer_libtorch.tar.gz)
 
 
 * Step 2. Start docker websocket server. Here is a demo.
 
 ``` sh
-model_dir=$PWD/20210327_unified_transformer_exp_server  # absolute path
-docker run --rm -it -p 10086:10086 -v $model_dir:/home/wenet/model mobvoiwenet/wenet:mini bash /home/run.sh
+model_dir=$PWD/20210602_u2++_conformer_libtorch  # absolute path
+docker run --rm -it -p 10086:10086 -v $model_dir:/home/wenet/model wenetorg/wenet-mini:latest bash /home/run.sh
 ```
 
 * Step 3. Test with web browser. Open runtime/server/x86/web/templates/index.html in the browser directly, input your `WebSocket URL`, it will request some permissions, and start to record to test, as the following graph shows.
@@ -56,7 +56,7 @@ export GLOG_logtostderr=1
 export GLOG_v=2
 wav_path=docker_resource/test.wav
 model_dir=docker_resource/model
-./build/decoder_main \
+./build/bin/decoder_main \
     --chunk_size -1 \
     --wav_path $wav_path \
     --model_path $model_dir/final.zip \
@@ -82,7 +82,7 @@ export GLOG_logtostderr=1
 export GLOG_v=2
 wav_path=your_test_wav_path
 model_dir=your_model_dir
-./build/decoder_main \
+./build/bin/decoder_main \
     --chunk_size -1 \
     --wav_path $wav_path \
     --model_path $model_dir/final.zip \
@@ -102,7 +102,7 @@ model_dir=your_model_dir
 export GLOG_logtostderr=1
 export GLOG_v=2
 model_dir=your_model_dir
-./build/websocket_server_main \
+./build/bin/websocket_server_main \
     --port 10086 \
     --chunk_size 16 \
     --model_path $model_dir/final.zip \
@@ -115,7 +115,7 @@ export GLOG_logtostderr=1
 export GLOG_v=2
 wav_path=your_test_wav_path
 ./build/websocket_client_main \
-    --host 127.0.0.1 --port 10086 \
+    --hostname 127.0.0.1 --port 10086 \
     --wav_path $wav_path 2>&1 | tee client.log
 ```
 
@@ -141,7 +141,7 @@ mkdir build && cd build && cmake -DGRPC=ON .. && cmake --build .
 export GLOG_logtostderr=1
 export GLOG_v=2
 model_dir=your_model_dir
-./build/grpc_server_main \
+./build/bin/grpc_server_main \
     --port 10086 \
     --workers 4 \
     --chunk_size 16 \
@@ -155,8 +155,8 @@ model_dir=your_model_dir
 export GLOG_logtostderr=1
 export GLOG_v=2
 wav_path=your_test_wav_path
-./build/grpc_client_main \
-    --host 127.0.0.1 --port 10086 \
+./build/bin/grpc_client_main \
+    --hostname 127.0.0.1 --port 10086 \
     --wav_path $wav_path 2>&1 | tee client.log
 ```
 
